@@ -202,30 +202,10 @@ for i = 1:length(couptype)
      writetable(T3,filename,'Sheet',couptype{i},'Range','B1')
 end
 
-%% um plot por animal com seus trechos
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-close all;
-fig=1;
-ax(fig)=figure;
-for i =2:height(T2)
-    x = T2.PSD(i,:);
-    if strcmp(T2.Animal(i),T2.Animal(i-1))
-        hold on
-        powerplot(func(1).freq,x,[0 100],[0 0.0001])
-        legend = T2.Epoch(i);
-    else
-        ax(fig).Name = join([T2.Animal(i-1) T2.Placement(i-1)],' ');
-        title = ax(fig).Name;
-        hold off
-        fig = fig+1;
-        ax(fig)=figure;
-        powerplot(func(1).freq,x,[0 100],[0 0.0001])
-    end
-end
-ax(fig).Name = join([T2.Animal(i-1) T2.Placement(i-1)],' ');
-title = ax(fig).Name;
+
 
 %% plot power by animal and placement with group mean
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 T2 = [T T1];
 PSDbyAnimal = varfun(@mean,T2,'InputVariables',variable,'GroupingVariables',{'Group','Animal','Placement'});
 ncol=width(PSDbyAnimal);
@@ -310,3 +290,27 @@ for f = 1:size(F,1)
 %         pause(1)
 end
 saveas(figure(1),[folder '\Power.pdf'])
+
+
+%% um plot por animal com seus trechos
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+close all;
+fig=1;
+ax(fig)=figure;
+for i =149:height(T1)
+    x = T2.PSD(i,:);
+    if strcmp(T2.Animal(i),T2.Animal(i-1))
+        hold on
+        powerplot(func(1).freq,x,[0 100],[0 0.0001])
+        legend = T2.Epoch(i);
+    else
+        ax(fig).Name = join([T2.Animal(i-1) T2.Placement(i-1)],' ');
+        title = ax(fig).Name;
+        hold off
+        fig = fig+1;
+        ax(fig)=figure;
+        powerplot(func(1).freq,x,[0 100],[0 0.0001])
+    end
+end
+ax(fig).Name = join([T2.Animal(i-1) T2.Placement(i-1)],' ');
+title = ax(fig).Name;
