@@ -47,7 +47,7 @@ for bin = bins
     count = count+1;
 %     if strcmp(type,'pp')
 %     else
-    MeanAmp(count) = mean(hfdata(lfdata > bin & lfdata <= bin+step));
+    MeanAmp(count) = median(hfdata(lfdata > bin & lfdata <= bin+step));
 %     end
 end
 

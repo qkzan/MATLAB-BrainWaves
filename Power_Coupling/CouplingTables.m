@@ -9,7 +9,7 @@ set(0,'defaultaxesfontname','Arial','defaultaxesfontsize',11,'defaultAxesColorOr
 % % Carregar dados
 % cd 'C:\Users\Leonardo\Documents\PendriveDeOuroDaQ\KitPower\Data'
 cd 'C:\Users\queru\Documents\MATLAB\WARcrio\KitPower'
-folder='Results_5_semSobrepFaixasFiltro\';
+folder='Results_6_newWistar\';
 mkdir(folder)
 
 %% Escolher animal e parametros de analise (qual o acoplamento e fatores)
@@ -26,11 +26,12 @@ low_freq_idx = 1:3;
 high_freq_idx = low_freq_idx(end)+1:size(F,1);
 
 % Data
-load comodulogramvariables selectedLFPs srate timevec epochsize ID IDcode
+load comodulogramvariables srate timevec epochsize ID IDcode
 dt=1/srate;
 cutvec = 5000:5000+epochsize;
 Data = table(IDcode(:,1),join(ID(:,2:4)),IDcode(:,2),ID(:,5),...
     'VariableNames',{'Epoch','Animal'      ,'Group'    ,'Placement'});
+load Data
 
 load 'IndividualPowerResults' 'F_psd' 'F_tfd'
 
@@ -122,7 +123,7 @@ PeakPowerFreq.Properties.VariableNames = newname(:,2);
 
 T2 = [T MeanPower PeakPowerFreq];
 % salva a tabela com o mean power e o peak power freq
-filename = [folder 'MeandBPower&PeakFreq.xlsx'];
+filename = [folder 'PowerDB_dB.xlsx'];
 writetable(T2,filename)
 
 %% Extracts coupling data
@@ -192,7 +193,7 @@ Coupling = table(PhaAmp, PhaFreq, AmpAmp, AmpFreq);
 couptype = Coupling.Properties.VariableNames;
 MI = table('Size',[height(T) width(Coupling)],'VariableTypes',repmat({'table'},1,width(Coupling)),'VariableNames',Coupling.Properties.VariableNames);
 %% 
-filename = [folder 'CouplingBinMean.xlsx'];
+filename = [folder 'CouplingBinMedian.xlsx'];
 for i = 1:length(couptype)
     for coup = 1:length(newname)
         MI.(i) = addvars(MI.(i),Coupling.(i).(coup).MI,'NewVariableNames',newname{coup});
