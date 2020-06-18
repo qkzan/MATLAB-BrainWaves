@@ -267,8 +267,15 @@ figure('Position',[20 20 620 920],'PaperOrientation','rotated');
 for f = 1:size(F,1)
         a=subplot(3,2,f);
         idx = func(1).idx{f};
-        plot(func(1).freq,PSDbyGroup.mean_mean_PSDdB);
-        %     plot(func(1).freq,PSDstd.std_mean_PSD(cases{3},:),':'); hold off
+        x = func(1).freq';
+        hold on
+        for i = 1:height(PSDbyGroup)
+            y = PSDbyGroup.mean_mean_PSDdB(i,:);
+            sd = PSDstd.std_mean_PSDdB(i,:);
+            patch('XData',[x fliplr(x)],'YData',[y-sd fliplr(y+sd)],'FaceColor',co(i,:),'FaceAlpha',0.7,'LineStyle','none')
+        end
+        plot(x,PSDbyGroup.mean_mean_PSDdB);
+        hold off
         box off
         xlabel('Frequency (Hz)')
         ylabel({F{f,2} ;['Power (dB)']})
@@ -277,8 +284,8 @@ for f = 1:size(F,1)
         if f==4 || f==6
             a.XTick = (F{f}(1):(F{f}(2)-F{f}(1))/4:F{f}(2));
         end
-        Y2 = max(max(PSDbyGroup.mean_mean_PSDdB(:,idx)));
-        Y1 = min(min(PSDbyGroup.mean_mean_PSDdB(:,idx)))-1;
+        Y2 = max(max(PSDbyGroup.mean_mean_PSDdB(:,idx)+PSDstd.std_mean_PSDdB(:,idx)));
+        Y1 = min(min(PSDbyGroup.mean_mean_PSDdB(:,idx)-PSDstd.std_mean_PSDdB(:,idx)))-1;
         a.YLim = [Y1 Y2];
         range = Y2-Y1;
         x=3;
@@ -289,7 +296,7 @@ for f = 1:size(F,1)
         ytickformat('%.1f')
 %         pause(1)
 end
-saveas(figure(1),[folder '\Power.pdf'])
+saveas(figure(1),[folder 'Power2.pdf'])
 
 
 %% um plot por animal com seus trechos
