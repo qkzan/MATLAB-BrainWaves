@@ -1,7 +1,8 @@
 %% plot power by animal and placement with group mean
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-T2 = [T T1];
-PSDbyAnimal = varfun(@mean,T2,'InputVariables',variable,'GroupingVariables',{'Group','Animal','Placement'});
+T4 = [T T1];
+variable = 'PSDdB';
+PSDbyAnimal = varfun(@mean,T4,'InputVariables',variable,'GroupingVariables',{'Group','Animal','Placement'});
 ncol=width(PSDbyAnimal);
 PSDbyGroup = varfun(@mean,PSDbyAnimal,'InputVariables',ncol,'GroupingVariables',{'Group','Placement'});
 PSDstd = varfun(@std,PSDbyAnimal,'InputVariables',ncol','GroupingVariables',{'Group'});
