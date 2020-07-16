@@ -8,7 +8,7 @@ set(0,'defaultaxesfontname','Arial','defaultaxesfontsize',11,'defaultAxesColorOr
 
 % % Carregar dados
 % cd 'C:\Users\Leonardo\Documents\PendriveDeOuroDaQ\KitPower\Data'
-cd 'C:\Users\queru\Documents\MATLAB\WARcrio\KitPower'
+cd 'C:\Users\queru\OneDrive - Universidade Federal do Rio Grande do Sul\WARCrio\KitPower\Data'
 folder='Results_6_newWistar\';
 mkdir(folder)
 
@@ -170,17 +170,17 @@ for lf = low_freq_idx
         
         % PhaPha
         
-        data = rowfun(@(x,y) couplingMI2(x,y,'pa'),[Pha(:,lf) Amp(:,hf)],'OutputVariableNames',{'MI','Median','bins','step'});
+        data = rowfun(@(x,y) couplingMI2(x,y,'pa'),[Pha(:,lf) Amp(:,hf)],'OutputVariableNames',{'MI','prob','bins','step'});
         PhaAmp = addvars(PhaAmp,data,'NewVariableNames',newname{count});
 %         MI.(1) = [MI.(1) data.(1)]
         
-        data = rowfun(@(x,y) couplingMI2(x,y,'pf'),[Pha(:,lf) InstFreq(:,hf)],'OutputVariableNames',{'MI','Median','bins','step'});
+        data = rowfun(@(x,y) couplingMI2(x,y,'pf'),[Pha(:,lf) InstFreq(:,hf)],'OutputVariableNames',{'MI','prob','bins','step'});
         PhaFreq = addvars(PhaFreq,data,'NewVariableNames',newname{count});
         
-        data  = rowfun(@(x,y) couplingMI2(x,y,'aa'),[Amp(:,lf) Amp(:,hf)],'OutputVariableNames',{'MI','Median','bins','step'});
+        data  = rowfun(@(x,y) couplingMI2(x,y,'aa'),[Amp(:,lf) Amp(:,hf)],'OutputVariableNames',{'MI','prob','bins','step'});
         AmpAmp = addvars(AmpAmp,data,'NewVariableNames',newname{count});
         
-        data = rowfun(@(x,y) couplingMI2(x,y,'af'),[Amp(:,lf) InstFreq(:,hf)],'OutputVariableNames',{'MI','Median','bins','step'});
+        data = rowfun(@(x,y) couplingMI2(x,y,'af'),[Amp(:,lf) InstFreq(:,hf)],'OutputVariableNames',{'MI','prob','bins','step'});
         AmpFreq = addvars(AmpFreq,data,'NewVariableNames',newname{count});
         
         % FreqFreq
@@ -202,5 +202,4 @@ for i = 1:length(couptype)
      writetable(T3,filename,'Sheet',couptype{i},'Range','B1')
 end
 
-
-
+save Tables.mat

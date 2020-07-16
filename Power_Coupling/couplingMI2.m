@@ -1,4 +1,4 @@
-function [MI,MeanAmp,bins,step] = couplingMI2(lfdata,hfdata,type)
+function [MI,p,bins,step] = couplingMI2(lfdata,hfdata,type)
 % [MI] = couplingMI(couplingType,t,lfp1,lfp2)
 %
 % coupling type is a char vector with these possible values:
