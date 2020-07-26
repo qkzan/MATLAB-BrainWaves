@@ -8,7 +8,7 @@ set(0,'defaultaxesfontname','Arial','defaultaxesfontsize',11,'defaultAxesColorOr
 
 % % Carregar dados
 % cd 'C:\Users\Leonardo\Documents\PendriveDeOuroDaQ\KitPower\Data'
-cd 'C:\Users\queru\OneDrive - Universidade Federal do Rio Grande do Sul\WARCrio\KitPower\Data'
+cd 'C:\Users\queru\OneDrive - Universidade Federal do Rio Grande do Sul\WARCrio\KitPower'
 folder='Results_6_newWistar\';
 mkdir(folder)
 
@@ -53,21 +53,21 @@ end
 [~,Idx] = setdiff(Data(:,Idx),outliers,'rows','stable');
 T = Data(Idx(epochs),:);
 
-% PSD parameters
+% PSD and Coherence parameters
 func(1).name = 'PSD';
-func(1).freq = F_psd; clear F_psd
+func(1).freq = F_psd(F_psd<=150); clear F_psd
 func(1).winlength = 4*srate; %window size
 func(1).winoverlap = func(1).winlength/2; %window overlap
 func(1).function = @(x) pwelch(x',func(1).winlength,func(1).winoverlap,func(1).freq,srate)';
 
 % TFD parameters
 func(2).name = 'TFD';
-func(2).freq = F_tfd; clear F_tfd
-func(2).winlength = 2*srate; %window size
+func(2).freq = 1:0.1:150; clear F_tfd
+func(2).winlength = 0.5*srate; %window size
 func(2).winoverlap = 0.5*func(2).winlength/2; %window overlap
 func(2).function = @(x) spectrogram(x,func(2).winlength,func(2).winoverlap,func(2).freq,srate)';
 
-%% Define os pontos que são de cada frequencia para o PSD e o TFD
+%% Define as posições no vetor de F que são de cada frequencia
 for f=1:size(F,1)
     startpoint = F{f,1}(1);
     endpoint = F{f,1}(2);
@@ -81,14 +81,14 @@ for f=1:size(F,1)
 end
 %%
 nfactors = width(T);
-T1=table;
+T1=T;
 
 % alinha o lfp ao redor de 0 mV
 T1.lfplong = detrend(selectedLFPs(epochs,:)','linear')';
 
 % corta o trecho do lfp para o período desejado
 lfp = T1.lfplong(:,cutvec);
-T1.lfp = lfp;
+T1.lfp = lfp; clear lfp;
 
 % calcula o PSD de cada trecho
 data = varfun(func(1).function,T1,'InputVariables','lfp');
@@ -97,9 +97,13 @@ T1 = addvars(T1,data.(1),'NewVariableNames','PSD');
 % calcula o PSD de cada trecho em dB
 T1.PSDdB = 10.*log10(T1.PSD);
 
+% T2 = [T table(T1.PSDdB)];
+% filename = [folder 'PSD_dB.xlsx'];
+% writetable(T2,filename)
+
 %% calcula o TFD de cada trecho
-data = cell2table(rowfun(func(2).function,T1,'InputVariables','lfp','OutputFormat','cell'));
-T1 = addvars(T1,data.(1),'NewVariableNames','TFD'); clear data;
+% data = cell2table(rowfun(func(2).function,T1,'InputVariables','lfp','OutputFormat','cell','OutputVariableNames',{'S','Freq','Time','TFD'}));
+% T1 = addvars(T1,data.(end),'NewVariableNames','TFD'); clear data;
 
 %% calcula o poder médio e a frequencia de pico para cada frequência  de cada trecho
 FreqNames = cellfun(@(x) strrep(x,' ',''),F(:,2),'UniformOutput',false)';
@@ -125,7 +129,49 @@ T2 = [T MeanPower PeakPowerFreq];
 % salva a tabela com o mean power e o peak power freq
 filename = [folder 'PowerDB_dB.xlsx'];
 writetable(T2,filename)
+%% Calculates Coherence
+count = 1;
+clear idx
+for n = unique(T.Epoch)'
+    i = find(T.Epoch==n);
+    if length(i)==2
+        X = T1.lfp(i(2),:);
+        Y = T1.lfp(i(1),:);
+        [Cxy(count,:),~] = mscohere(X,Y,func(1).winlength,func(1).winoverlap,func(1).freq,srate);
+        idx(count) = i(1); 
+        count = count+1;
+    end
+end
 
+TCoh = table(Cxy);
+TCoh = [T(idx,1:3) TCoh];
+
+% for f=1:size(F,1)
+%     I = func(1).idx{f};
+%     I2 = repmat(func(1).freq,1,size(col,1))';
+%     
+%     newname{f,1} = ([FreqNames{f} 'MeanPower']);
+%     MeanPower.(f) = mean(col(:,I),2);
+%     
+%     newname{f,2} = ([FreqNames{f} 'PeakPowerFreq']);
+%     PeakPowerFreq.(f) = I2(col(:,:)==max(col(:,I),[],2));
+% end
+% MeanPower.Properties.VariableNames = newname(:,1);
+% PeakPowerFreq.Properties.VariableNames = newname(:,2);
+% 
+% T2 = [T MeanPower PeakPowerFreq];
+% % salva a tabela com o mean power e o peak power freq
+% filename = [folder 'PowerDB_dB.xlsx'];
+% writetable(T2,filename)
+
+
+
+
+
+
+% calculando a coherence média em freq range de interesse
+Itheta = find(F>5 & F<10);
+MeanThetaCoherence = mean(Cxy(Itheta))
 %% Extracts coupling data
 % filtra o sinal para cada frequencia e cada trecho com eegfilt
 data = rowfun(@(x) filtering(x,F,srate),T1,'InputVariables','lfplong');
