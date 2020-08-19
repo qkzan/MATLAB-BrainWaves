@@ -1,5 +1,5 @@
-function [MI,p,bins,step] = couplingMI2(lfdata,hfdata,type)
-% [MI] = couplingMI(couplingType,t,lfp1,lfp2)
+function [MI,p,bins,step,lfdata] = couplingMI(lfdata,hfdata,type)
+% [MI,p,bins,step,lfdata] = couplingMI(lfdata,hfdata,type)
 %
 % coupling type is a char vector with these possible values:
 %           'pp' - phase x phase coupling
@@ -8,10 +8,7 @@ function [MI,p,bins,step] = couplingMI2(lfdata,hfdata,type)
 %           'aa' - amplitude x amplitude coupling
 %           'af' - amplitude x frequency coupling
 %           'ff' - frequency x frequency coupling
-% lfp1 and lfp2 are same original data vectors to be analysed filtered for different frequencies
-% graphics = 'on' or 'off'
-% sflabel = slow frequency label
-% hflabel = high frequency label
+% lfdata and hfdata are same lfp data vectors filtered for different frequencies
 
 switch type
     

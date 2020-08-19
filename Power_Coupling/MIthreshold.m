@@ -1,5 +1,6 @@
 function [result] =  MIthreshold(MI,meanMI_surr,MIsdt_surr)
-
+% Esta função serve para indicar se passou de um limiar de dados aleatórios
+% para MI
 % [MI,p,bins,step] = couplingMI2(Pha,Amp,'pa');
 % N_surr = 500;
 % 

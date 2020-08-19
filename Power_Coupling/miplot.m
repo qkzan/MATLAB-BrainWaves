@@ -29,8 +29,8 @@ for count = unique(T.Epoch)'
         prob = eval([coup_type '.(3).prob(i,:)']);
         step = eval([coup_type '.(3).step(i,:)']);
         mi_value=eval([coup_type '.(3).MI(i,:)']);
-        misurr_value = 1;
-        threshold = 1;
+        misurr_value = eval([coup_type '.(3).MI_surr(i,:)']);
+        threshold = eval([coup_type '.(3).MI_threshold']);
         %%
         subplot(2,2,pos)
         bar([bins bins+bins(end)+step],[prob flip(prob)],1,'k')

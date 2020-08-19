@@ -164,14 +164,11 @@ TCoh = [T(idx,1:3) TCoh];
 % filename = [folder 'PowerDB_dB.xlsx'];
 % writetable(T2,filename)
 
-
-
-
-
-
 % calculando a coherence média em freq range de interesse
-Itheta = find(F>5 & F<10);
-MeanThetaCoherence = mean(Cxy(Itheta))
+% Itheta = find(F>5 & F<10);
+% MeanThetaCoherence = mean(Cxy(Itheta))
+
+
 %% Extracts coupling data
 % filtra o sinal para cada frequencia e cada trecho com eegfilt
 data = rowfun(@(x) filtering(x,F,srate),T1,'InputVariables','lfplong');
@@ -216,17 +213,17 @@ for lf = low_freq_idx
         
         % PhaPha
         
-        data = rowfun(@(x,y) couplingMI2(x,y,'pa'),[Pha(:,lf) Amp(:,hf)],'OutputVariableNames',{'MI','prob','bins','step'});
+        data = rowfun(@(x,y) couplingMIsurr(x,y,'pa',500),[Pha(:,lf) Amp(:,hf)],'OutputVariableNames',{'MI','prob','bins','step','MI_surr','MI_threshold','sig'});
         PhaAmp = addvars(PhaAmp,data,'NewVariableNames',newname{count});
 %         MI.(1) = [MI.(1) data.(1)]
         
-        data = rowfun(@(x,y) couplingMI2(x,y,'pf'),[Pha(:,lf) InstFreq(:,hf)],'OutputVariableNames',{'MI','prob','bins','step'});
+        data = rowfun(@(x,y) couplingMIsurr(x,y,'pf',500),[Pha(:,lf) InstFreq(:,hf)],'OutputVariableNames',{'MI','prob','bins','step','MI_surr','MI_threshold','sig'});
         PhaFreq = addvars(PhaFreq,data,'NewVariableNames',newname{count});
         
-        data  = rowfun(@(x,y) couplingMI2(x,y,'aa'),[Amp(:,lf) Amp(:,hf)],'OutputVariableNames',{'MI','prob','bins','step'});
+        data  = rowfun(@(x,y) couplingMIsurr(x,y,'aa',500),[Amp(:,lf) Amp(:,hf)],'OutputVariableNames',{'MI','prob','bins','step','MI_surr','MI_threshold','sig'});
         AmpAmp = addvars(AmpAmp,data,'NewVariableNames',newname{count});
         
-        data = rowfun(@(x,y) couplingMI2(x,y,'af'),[Amp(:,lf) InstFreq(:,hf)],'OutputVariableNames',{'MI','prob','bins','step'});
+        data = rowfun(@(x,y) couplingMIsurr(x,y,'af',500),[Amp(:,lf) InstFreq(:,hf)],'OutputVariableNames',{'MI','prob','bins','step','MI_surr','MI_threshold','sig'});
         AmpFreq = addvars(AmpFreq,data,'NewVariableNames',newname{count});
         
         % FreqFreq
@@ -249,3 +246,5 @@ for i = 1:length(couptype)
 end
 
 save Tables.mat
+
+%%
