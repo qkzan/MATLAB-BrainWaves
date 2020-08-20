@@ -1,2 +1,2 @@
 # MATLAB-BrainWaves
- Codes for EEG and LFP processing and analysis.
+ General codes for EEG and LFP processing and analysis.
