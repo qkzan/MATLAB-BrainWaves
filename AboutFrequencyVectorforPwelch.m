@@ -5,6 +5,8 @@
 clear;clc;
 load event
 srate = 1000;
+dt = 1/srate;
+timevec = dt:dt:length(event)*dt;
 
 winlength = 4*srate; %window size
 winoverlap = winlength/2; %window overlap
@@ -26,8 +28,8 @@ y=max(P(F>=30,n));
 
 figure(1)
 subplot 311
-plot(event(:,n),'k')
-xlabel('Time (ms)')
+plot(timevec,event(:,n),'k')
+xlabel('Time (s)')
 ylabel('LFP (mV)')
 
 subplot 312
@@ -38,14 +40,14 @@ hold off
 xlabel('Frequency (Hz)')
 ylabel('Power (mV²/Hz)')
 xlim([-90 90])
-ylim([0 0.00005])
+ylim([0 0.000005])
 legend('pwelch''s default','[-F +F]')
 title('Power is calculated for + and - frequencies')
 
 subplot(3,2,[5 6])
 plot(F,P(:,n),'b',F2,P2(:,n),'r',F2,2*P2(:,n),'r.');
 % plot(F,P(:,n),'b',F3(ff),P3(ff,n),'k',F3(ff),2*P3(ff,n),'k.');
-xlim([30 50])
+xlim([90 250])
 ylim([0 y])
 legend('default freq vector pwelch','with selected freq vector','2 x power (-F + F)')
 ylabel('Power mV²/Hz')
