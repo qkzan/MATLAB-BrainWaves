@@ -39,16 +39,16 @@ plot(F3,P3(:,n),'k')
 hold off
 xlabel('Frequency (Hz)')
 ylabel('Power (mV²/Hz)')
-xlim([-90 90])
-ylim([0 0.000005])
+xlim([-10 10])
+% ylim([0 0.000005])
 legend('pwelch''s default','[-F +F]')
 title('Power is calculated for + and - frequencies')
 
 subplot(3,2,[5 6])
 plot(F,P(:,n),'b',F2,P2(:,n),'r',F2,2*P2(:,n),'r.');
 % plot(F,P(:,n),'b',F3(ff),P3(ff,n),'k',F3(ff),2*P3(ff,n),'k.');
-xlim([90 250])
-ylim([0 y])
+xlim([0 10])
+% ylim([0 y])
 legend('default freq vector pwelch','with selected freq vector','2 x power (-F + F)')
 ylabel('Power mV²/Hz')
 xlabel('Frequency (Hz)')

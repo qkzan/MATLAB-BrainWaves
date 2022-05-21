@@ -17,6 +17,10 @@ winlength2 = 2*srate; %window size
 winoverlap = winlength2/2; %window overlap
 [P2,F2]=pwelch(event,winlength2,winoverlap,nfft,srate);
 
+winlength3 = 6*srate; %window size
+winoverlap = winlength3/2; %window overlap
+[P3,F3]=pwelch(event,winlength3,winoverlap,nfft,srate);
+
 figure(1)
 subplot (3,1,1)
 plot(timevec,event,'k')
@@ -27,12 +31,14 @@ ylim([-0.5 0.5])
 box off
 
 subplot (3,1,[2 3])
-plot(F1,P1,'k.-','MarkerSize',10)
+plot(F3,P3,'.-','Color',[0.5 0.5 1],'MarkerSize',10);
 hold on
 plot(F2,P2,'r.-','MarkerSize',10)
+plot(F1,P1,'k.-','MarkerSize',10)
 hold off
+
 xlabel('Frequency (Hz)')
 ylabel('Power (mV²/Hz)')
-xlim([100 150])
-legend('4s window','2s window')
+xlim([100 110])
+legend('6s window','4s window','2s window')
 box off
