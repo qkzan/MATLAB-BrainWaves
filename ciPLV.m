@@ -1,9 +1,11 @@
+clear
+clc
 load ciPLVsample
 
-Dados    = T1(1:10,[1:4 6]); % apagar depois de salvar
-Left     = Dados(Dados{:,4}=="CtxE",:);
-Right    = Dados(Dados{:,4}=="CtxD",:);
-Dados2CH = innerjoin(Left,Right,'Keys',[1:3]);
+% Dados    = T1;
+% Left     = Dados(Dados{:,4}=="CtxE",:);
+% Right    = Dados(Dados{:,4}=="CtxD",:);
+% Dados2CH = innerjoin(Left,Right,'Keys',[1:3]);
 
 left  = M(2:2:10,:);    % trechos do canal 1
 right = M(1:2:10,:);   % trechos do canal 2
@@ -11,8 +13,7 @@ right = M(1:2:10,:);   % trechos do canal 2
 srate = 1000;   % taxa de amostragem
 dt    = 1/srate;
 freq  = F_psd;     % vetor de frequencias de interesse
-%% apagar depois de salvar
-save('A:\GitHub\MATLAB-BrainWaves\ciPLVsample.mat', 'Dados','M','F_psd')
+
 %% Definir limites de faixas de frequencias
 F = { [1        4        4]         'Delta'     %(1)
       [4        12       12]        'Theta'     % (2)
