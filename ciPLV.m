@@ -2,13 +2,12 @@ clear
 clc
 load ciPLVsample
 
-% Dados    = T1;
-% Left     = Dados(Dados{:,4}=="CtxE",:);
-% Right    = Dados(Dados{:,4}=="CtxD",:);
-% Dados2CH = innerjoin(Left,Right,'Keys',[1:3]);
+% Left     = T1(T1{:,4}=="CtxE",:);
+% Right    = T1(T1{:,4}=="CtxD",:);
+% Dados = innerjoin(Left,Right,'Keys',[1:3]);
 
-left  = M(2:2:10,:);    % trechos do canal 1
-right = M(1:2:10,:);   % trechos do canal 2
+left  = Dados.lfp_Left;    % trechos do canal 1
+right = Dados.lfp_Right;   % trechos do canal 2
 
 srate = 1000;   % taxa de amostragem
 dt    = 1/srate;
@@ -45,7 +44,7 @@ for f=1:nfreq
 end
 
 %% wavelet com central frequencies diferentes por banda de frequencia (parte 2/2)
-for n=1:height(left)
+for n=1:height(Dados)
     x = right(n,:);
     y = left(n,:);
     WavTransf1 = [];
@@ -57,10 +56,9 @@ for n=1:height(left)
         WavTransf2 = [WavTransf2; wavtransf2];
         clear wavtransf1 wavtransf2
     end
-end
+
 
 %% ciPLV
-for n=1:height(left)
     Phase1 = angle(WavTransf1);
     Phase2 = angle(WavTransf2);
     pha_diff = Phase1-Phase2; %%%%%
@@ -68,21 +66,17 @@ for n=1:height(left)
     MeanVector = mean(exp(1i*pha_diff),2);
     
     ciPLV(n,:) = abs(imag(MeanVector)./sqrt(1-real(MeanVector).^2));
-    
-    ciPLV = [Dados2CH(:,1:3) table(ciPLV)];
 end
-
+ciPLV = [Dados(:,1:3) table(ciPLV)];
 %% saving data to excel
 variable = 'ciPLV';
-xlsfilemane = 'A:\OneDrive - Universidade Federal do Rio Grande do Sul\WARCrio\Manuscrito\Results\syncronyIndex_M\SynIdx.xlsx';
+xlsfilemane = 'A:\WARCrio\Results\ciPLV.xlsx';
 writetable(ciPLV,xlsfilename,'sheet',variable,'Range','A1')
 %% savind data table
-save ciPLV_table.mat ciPLV
+save ciPLV_table.mat ciPLV freq
 
 %% Plot do grafico do espectro
-
 % load ciPLV_table.mat
-
 figure(3)
 variable = 'ciPLV';
 tab = eval(variable);
